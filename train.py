@@ -37,6 +37,41 @@ def parse_arguments():
 
 
 
+################################# Plotting Confusion Matrix #################################
+
+def plot_confusion_mat(y, y_pred):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import seaborn as sn
+
+    CLASSES = {
+        0:'Amphibia',
+        1:'Animalia',
+        2:'Arachnida',
+        3:'Aves',
+        4:'Fungi',
+        5:'Insecta',
+        6:'Mammalia',
+        7:'Mollusca',
+        8:'Plantae',
+        9:'Reptilia'
+    }
+
+    mp = np.zeros((len(CLASSES),len(CLASSES)))
+    for i,j in zip(y, y_pred):
+        mp[i][j]+=1
+
+    df_cm = pd.DataFrame(mp, [i for i in CLASSES.values()], [i for i in CLASSES.values()])
+    plt.figure(figsize=(12,12))
+    sn.set(font_scale=1) # for label size
+    sn.heatmap(df_cm, annot=True, annot_kws={"size": 9}, cmap='crest', fmt='g') # font size
+    plt.xlabel('Prediction')
+    plt.ylabel('Actual')
+
+
+
+
 
 
 ################################# Load Data #################################
@@ -318,6 +353,12 @@ def train():
     print(f"Total Correctly Predicted --> {tstCorrect}")
     print(f"Testing Accuracy --> {(tstCorrect/tstCounter)*100}")
     
+
+    ###### Uncomment this line if you want to plot confusion matrix of testing prediction
+    # plot_confusion_mat(y,y_pred)
+
+
+
 
 
 
