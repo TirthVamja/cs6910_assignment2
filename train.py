@@ -14,18 +14,21 @@ import sys, argparse
 
 ################################# Parse Arguments #################################
 
+def float32_type(arg):
+    return torch.tensor(float(arg), dtype=torch.float32)
+
 def parse_arguments():
 	parser = argparse.ArgumentParser(description='Training Arguments')
 	parser.add_argument('-wp', '--wandb_project', type=str, default='dl_assignment_2', help='Project name used to track experiments in Weights & Biases dashboard')
 	parser.add_argument('-we', '--wandb_entity', type=str, default='dl_assignment_2', help='Wandb Entity used to track experiments in the Weights & Biases dashboard.')
 	parser.add_argument('-e', '--epochs', type=int, default=10, help='Number of epochs to train neural network.')
 	parser.add_argument('-b', '--batch_size', type=int, default=32, help='Batch size used to train neural network.')
-	parser.add_argument('-lr', '--learning_rate', type=float, default=1e-3, help='Learning rate used to optimize model parameters')
+	parser.add_argument('-lr', '--learning_rate', type=float32_type, default=0.001, help='Learning rate used to optimize model parameters')
 	parser.add_argument('-a', '--activation', type=str, default='relu', choices=["selu", "mish", "relu"], help='Activation function choice: ["selu", "mish", "relu"]')
 	parser.add_argument('-f', '--filters', type=int, default=64, help='Number of filters in 1st layer')
 	parser.add_argument('-fo', '--filter_org', type=str, default='half', choices=["same", "half", "double"], help='Number of Filters down the network')
 	parser.add_argument('-da', '--data_augmentation', type=bool, default=True, choices=[True, False], help='Augment data randomly.')
-	parser.add_argument('-dr', '--dropout', type=float, default=0.2, help='Dropout probability to be used.')
+	parser.add_argument('-dr', '--dropout', type=float32_type, default=0.2, help='Dropout probability to be used.')
 	parser.add_argument('-bn', '--batch_normalization', type=bool, default=False, choices=[True, False], help='whether to use Batch Normalization or not')
 	parser.add_argument('-dn', '--dense_neurons', type=int, default=1024, help='Number of neurons in last fc layer')
 	parser.add_argument('-ks', '--kernel_size', type=int, default=3, help='Size of convolution kernel filter')
@@ -278,6 +281,7 @@ def train():
     
 
     for epo in range(param['epochs']):
+        print(f"Epoch --> {epo+1}")
         model.train()
         totalTrainLoss = 0
         totalValLoss = 0
@@ -312,7 +316,6 @@ def train():
         tr_acc = trainCorrect/len(train_data_loader.dataset)
         val_ls = (totalValLoss/validation_counter).cpu().detach().numpy()
         val_acc = valCorrect/len(validation_data_loader.dataset)
-        print(f"Epoch --> {epo}")
         print(f"Train Loss --> {tr_ls}")
         print(f"Train Accuracy --> {tr_acc}")
         print(f"Validation Loss --> {val_ls}")

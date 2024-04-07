@@ -102,6 +102,7 @@ def train():
     train_data_loader, validation_data_loader = get_data(param, 'train')
 
     for epo in range(param['epochs']):
+        print(f"Epoch --> {epo+1}")
         totalTrainLoss = 0
         totalValLoss = 0
         trainCorrect = 0
@@ -137,7 +138,6 @@ def train():
         val_acc = valCorrect/len(validation_data_loader.dataset)
 
 
-        print(f"Epoch --> {epo}")
         print(f"Train Loss --> {tr_ls}")
         print(f"Train Accuracy --> {tr_acc}")
         print(f"Validation Loss --> {val_ls}")
