@@ -154,6 +154,27 @@ def train():
         wandb.log(lg)
 
 
+    # Testing Data after all epochs are completed ...
+    test_data_loader = get_data(param, 'test')
+    tstCorrect = 0
+    tstCounter = 0
+    y = []
+    y_pred = []
+    with no_grad():
+        pmodel.eval()
+        for (image, label) in test_data_loader:
+            (image, label) = (image.to(device), label.to(device))
+            pred = pmodel(image)
+            ll = label.tolist()
+            y.extend(ll)
+            y_pred.extend(pred.argmax(1).tolist())
+            # print(pred)
+            tstCorrect += (pred.argmax(1) == label).type(float).sum().item()
+            tstCounter+=len(ll)
+
+    print(f"Total Testing Image --> {tstCounter}")
+    print(f"Total Correctly Predicted --> {tstCorrect}")
+    print(f"Testing Accuracy --> {(tstCorrect/tstCounter)*100}")
 
 
 
